@@ -1,0 +1,532 @@
+openapi: 3.0.3
+info:
+  title: Trip Social Network
+  description: 'Homework for System Design course'
+  version: 1.0.11
+tags:
+  - name: Посты
+    description: Публикация постов из путешествий.
+  - name: Оценки
+    description: Оценки постов путешественников.
+  - name: Комментарии
+    description: Комментарии постов путешественников.
+  - name: Подписки
+    description: Подписка на путешественников.
+  - name: Поиск
+    description: Поиск популярных мест или других путешественников.
+  - name: Лента
+    description: Просмотр ленты.
+paths:
+  /posts:
+    post:
+      tags:
+        - Посты
+      summary: Добавить новый пост
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WritePost"
+
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /posts/{id}:
+    put:
+      tags:
+        - Посты
+      summary: Обновить существующий пост
+      parameters:
+        - name: id
+          in: path
+          description: id поста
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WritePost"
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Посты
+      summary: Удалить существующий пост
+      parameters:
+        - name: id
+          in: path
+          description: id поста
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+    get:
+      tags:
+        - Посты
+      summary: Посмотреть пост по id
+      parameters:
+        - name: id
+          in: path
+          description: id поста
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /places/{id}/posts:
+    get:
+      tags:
+        - Посты
+      summary: Посмотреть посты про популярное место
+      parameters:
+        - name: id
+          in: path
+          description: id места
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Post"
+
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /users/{id}/posts:
+    get:
+      tags:
+        - Посты
+      summary: Посмотреть посты пользователя
+      parameters:
+        - name: id
+          in: path
+          description: id пользователя
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Post"
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+  /posts/{id}/like:
+    post:
+      tags:
+        - Оценки
+      summary: Поставить лайк на пост путешественника
+      parameters:
+        - name: id
+          in: path
+          description: id поста
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Оценки
+      summary: Удалить лайк с поста путешественника
+      parameters:
+        - name: id
+          in: path
+          description: id поста
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+  /posts/{id}/comments:
+    post:
+      tags:
+        - Комментарии
+      summary: Оставить комментарий к посту путешественника
+      parameters:
+        - name: id
+          in: path
+          description: id поста
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: Текст комментария
+              required:
+                - text
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+    get:
+      tags:
+        - Комментарии
+      summary: Получить комментарии к посту путешественника
+      parameters:
+        - name: id
+          in: path
+          description: id поста
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        author:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              format: int64
+                            name:
+                              type: string
+                            photo:
+                              type: string
+                        text:
+                          type: string
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /comments/{id}:
+    delete:
+      tags:
+        - Комментарии
+      summary: Удалить комментарий с поста путешественника
+      parameters:
+        - name: id
+          in: path
+          description: id комментария
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /search:
+    get:
+      tags:
+        - Поиск
+      summary: Универсальный поиск
+      parameters:
+        - name: text
+          in: query
+          description: Текст запроса
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        name:
+                          type: string
+                        photo:
+                          type: string
+                  places:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        name:
+                          type: string
+                        location:
+                          type: array
+                          items:
+                            type: number
+                            format: float
+
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+  /users/{id}/subscribe:
+    post:
+      tags:
+        - Подписки
+      summary: Подписаться на пользователя
+      parameters:
+        - name: id
+          in: path
+          description: id пользователя
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Подписки
+      summary: Отписаться от пользователя
+      parameters:
+        - name: id
+          in: path
+          description: id пользователя
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+  /feed:
+    get:
+      tags:
+        - Лента
+      summary: Просмотр ленты
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Post"
+
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    WritePost:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Текст поста
+        photos:
+          type: array
+          description: Ссылка на фотографии
+          items:
+            type: string
+        location:
+          type: array
+          description: Локация путешествия
+          items:
+            type: number
+            format: float
+            description: Координаты локации
+      required:
+        - description
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+          description: Текст поста
+        author:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            photo:
+              type: string
+        photos:
+          type: array
+          description: Ссылка на фотографии
+          items:
+            type: string
+        location:
+          type: array
+          description: Локация путешествия
+          items:
+            type: number
+            format: float
+            description: Координаты локации
+        likes:
+          type: integer
+          description: Счетчик лайков
+          format: int64
