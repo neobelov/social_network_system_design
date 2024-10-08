@@ -16,6 +16,8 @@ tags:
     description: Поиск популярных мест или других путешественников.
   - name: Лента
     description: Просмотр ленты.
+  - name: Медиа
+    description: Загрузка картинок.
 paths:
   /posts:
     post:
@@ -467,6 +469,39 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Post"
+
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+  /images:
+    post:
+      tags:
+        - Медиа
+      summary: Загрузка картинок
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  link:
+                    type: string
+                    description: Ссылка на загруженный файл
 
         '400':
           description: Invalid input
