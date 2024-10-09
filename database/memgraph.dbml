@@ -1,0 +1,7 @@
+// графовая БД используется для того, чтобы выводить в ленту пользователя не только его подписки,
+но и подписки друзей
+
+MERGE (u1:User{id:1});
+MERGE (u2:User{id:2});
+MATCH (u1:User{id:1}), (u2:User{id:2})
+MERGE (u1)-[r:SUBSCRIBES]->(u2) ON CREATE SET r.from = timestamp();
