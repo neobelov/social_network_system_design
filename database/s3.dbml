@@ -1,0 +1,5 @@
+// условная таблица ceph / s3 хранилища
+table images {
+  key string
+  value string
+}
