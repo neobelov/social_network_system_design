@@ -46,6 +46,49 @@ paths:
           description: Invalid input
         '500':
           description: Internal server error
+  /feed:
+    get:
+      tags:
+        - Посты
+        - Лента
+      summary: Посмотреть посты
+      description: Если фильтрация не указана, то будет отображаться лента. Если указана, посты по фильтру.
+      parameters:
+        - name: place_id
+          in: query
+          description: id места
+          schema:
+            type: integer
+            format: int64
+        - name: user_id
+          in: query
+          description: id пользователя
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Post"
+
   /posts/{id}:
     put:
       tags:
@@ -114,87 +157,8 @@ paths:
           description: Invalid input
         '500':
           description: Internal server error
-  /places/{id}/posts:
-    get:
-      tags:
-        - Посты
-      summary: Посмотреть посты про популярное место
-      parameters:
-        - name: id
-          in: path
-          description: id места
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            format: int64
-        - name: offset
-          in: query
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  posts:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Post"
 
-        '400':
-          description: Invalid input
-        '500':
-          description: Internal server error
-  /users/{id}/posts:
-    get:
-      tags:
-        - Посты
-      summary: Посмотреть посты пользователя
-      parameters:
-        - name: id
-          in: path
-          description: id пользователя
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            format: int64
-        - name: offset
-          in: query
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  posts:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Post"
-        '400':
-          description: Invalid input
-        '500':
-          description: Internal server error
-
-  /posts/{id}/like:
+  /posts/{id}/likes:
     post:
       tags:
         - Оценки
@@ -403,7 +367,7 @@ paths:
         '500':
           description: Internal server error
 
-  /users/{id}/subscribe:
+  /users/{id}/subscribers:
     post:
       tags:
         - Подписки
@@ -438,40 +402,6 @@ paths:
       responses:
         '200':
           description: Successful operation
-        '400':
-          description: Invalid input
-        '500':
-          description: Internal server error
-
-  /feed:
-    get:
-      tags:
-        - Лента
-      summary: Просмотр ленты
-      parameters:
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            format: int64
-        - name: offset
-          in: query
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  posts:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Post"
-
         '400':
           description: Invalid input
         '500':
