@@ -1,0 +1,56 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+// таблица пользователей
+Table users {
+  id integer [primary key]
+  created_at timestamp
+
+  name text // GIN indexed
+  photo_link text
+}
+
+// таблица постов
+Table posts {
+  id integer [primary key]
+  user_id integer
+  created_at timestamp
+
+  description text // GIN indexed
+  location float[]
+  photo_links text[]
+  likes_count integer // кэш счетчика лайков
+
+  place_id integer // определяется автоматикой асинхронно
+}
+
+// популярные места
+Table places {
+  id integer [primary key]
+  name text // GIN indexed
+  location float[]
+}
+
+// Лайки к постам
+table posts_likes {
+  post_id integer
+  user_id integer
+}
+
+// комментарии к постам
+table posts_comments {
+  id integer [primary key]
+  post_id integer
+  user_id integer
+  reply_id integer
+  text string
+  created_at timestamp
+}
+
+// подписки на пользователей
+table subscriptions {
+  user_id integer
+  subscriber_id integer
+  created_at timestamp
+}
+

@@ -220,6 +220,9 @@ paths:
                 text:
                   type: string
                   description: Текст комментария
+                reply_id:
+                  type: integer
+                  description: ID комментария, если хотим привязать ответ к комменту
               required:
                 - text
         required: true
@@ -250,6 +253,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: reply_id
+          in: path
+          schema:
+            type: integer
+            description: ID комментария, если хотим посмотреть к нему ответы
         - name: limit
           in: query
           schema:
