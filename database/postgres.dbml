@@ -42,6 +42,7 @@ table posts_comments {
   id integer [primary key]
   post_id integer
   user_id integer
+  reply_id integer
   text string
   created_at timestamp
 }
